@@ -1,0 +1,104 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/layout/layout.html">
+<link rel="import" href="ace-question.html">
+<link rel="import" href="ace-model.html">
+<link rel="import" href="ace-calculator.html">
+<link rel="import" href="ace-calculator-right.html">
+
+<dom-module id="ace-app">
+	<style>
+		:host {
+			font-family: "Quicksand", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+		}
+		#header {
+			background-color: #009688;
+			height: 64px;
+		}
+		#content {
+			/*background-color: #E0F2F1;*/
+			background-color: white;
+		}
+		#calc-overlay {
+			pointer-events: none;
+		}
+		ace-calculator-left, ace-calculator-right {
+			pointer-events: all;
+		}
+		#content-wrapper {
+			overflow-y: scroll;
+		}
+		#center, #center-mock {
+			width: 700px;
+		}
+		#form {
+			margin: 20px 20px;
+			overflow: hidden;
+			border: 2px solid #E0F7FA;
+		}
+		img {
+			margin-left: 10px;
+		}
+		h3 {
+			margin-left: 10px;
+			font-weight: 500;
+			color: white;
+			font-size: 30px;
+		}
+		h1,h2,h3,h4,h5 {
+			font-family: Raleway, "Helvetica Neue", Helvetica, Arial, sans-serif;
+		}
+	</style>
+	<template>
+
+		<ace-model id="model" questions="{{questions}}"></ace-model>
+		<ace-calculator id="calc" results="{{calcResults}}"></ace-calculator>
+
+		<div id="header" class="horizontal layout center">
+			<img src="../images/p3_logo.png" width="50px">
+			<h3>Pre-Award Product Planner</h3>
+		</div>
+		<div id="content" class="flex relative">
+		
+			<div id="content-wrapper" class="fit layout horizontal">
+				<div id="center">
+					<div id="form">
+
+						<template is="x-repeat" items="{{questions}}">
+							<ace-question
+								text="{{item.text}}"
+								description="{{item.description}}"
+								options="{{item.options}}"
+								on-ace-refresh="handleRefresh"
+								hidden$="{{!item.visible}}">
+							</ace-question>
+						</template>
+
+					</div>
+				</div>
+				<div class="flex"></div>
+			</div>
+			
+			<div id="calc-overlay" class="fit layout horizontal">
+				<div id="center-mock"></div>
+				<div>
+					<ace-calculator-right results="{{calcResults}}"></ace-calculator-right>
+				</div>
+				<div class="flex"></div>
+			</div>
+		</div>
+	</template>
+</dom-module>
+
+
+<script> 
+	Polymer({
+		is: "ace-app",
+		hostAttributes: {
+			class: "vertical layout flex",
+		},
+
+		handleRefresh: function() {
+			this.$.calc.refresh(this.$.model.questions);
+		},
+	});
+</script>

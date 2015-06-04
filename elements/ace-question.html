@@ -1,0 +1,82 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/layout/layout.html">
+<link rel="import" href="ace-option.html">
+
+<dom-module id="ace-question">
+	<style>
+		:host {
+			background-color: white;
+			margin: 0px 20px 10px 20px;
+		}
+		.question-area {
+			margin-bottom: 20px;
+		}
+		.question-text {
+
+			font-size: 25px;
+			color: #009688;
+			font-weight: 400;
+			font-family: Raleway, "Helvetica Neue", Helvetica, Arial, sans-serif;
+		}
+	</style>
+	<template>
+		<div class="question-area">
+			<h3 class="question-text">{{text}}</h3>
+			<div class="description">{{description}}</div>
+		</div>
+
+		<div class="options layout horizontal">
+			<template id="optionRepeat" is="x-repeat" items="{{options}}">
+				<ace-option option="{{item}}" on-tap="handleTap"></ace-option>
+			</template>
+		</div>
+	</template>
+</dom-module>
+
+<script>
+	Polymer({
+		is: "ace-question",
+		properties: {
+			text: String,
+			description: String,
+			options: {
+				type: Array,
+				notify: true,
+			},
+		},
+		hostAttributes: {
+			class: "layout vertical",
+		},
+
+		handleTap: function(e, details) {
+			var option = this.$.optionRepeat.itemForElement(e.target);
+			var index = this.options.indexOf(option);
+
+			var path = "options."+index+".selected";
+			this.setPathValue(path, !option.selected);
+
+			if (option.selected == true) {
+				if(option.isExclusive) {
+					this.options.forEach(function(other_option, index) {
+						if (other_option != option) {
+							var path = "options."+index+".selected";
+							this.setPathValue(path, false);
+						}
+					}.bind(this));
+				} 
+				else {
+					this.options.forEach(function(other_option, index) {
+						if(other_option.isExclusive) {
+							if (other_option != option) {
+								var path = "options."+index+".selected";
+								this.setPathValue(path, false);
+							}
+						}
+					}.bind(this));
+				}
+			}
+
+			this.fire("ace-refresh");
+		},
+	});
+</script>

@@ -1,0 +1,166 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/layout/layout.html">
+<link rel="import" href="../bower_components/core-collapse/core-collapse.html">
+<script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/1.4.5/numeral.min.js"></script>
+
+<dom-module id="ace-calculator-right">
+	<link rel="stylesheet" href="../style.css">
+	<style>
+		.sidebox {
+			display: block;
+			width: 244px;
+			background-color: white;
+			border: 2px solid #E0F7FA;
+			margin: 20px 16px;
+		}
+		.sidebox-content {
+			padding: 4px;
+		}
+		.sidebox-header {
+			margin: 10px 0px 0px 10px;
+		}
+		.inner-box {
+			width: 110px;
+			height: 110px;
+			background-color: #E0F2F1;
+			border: 2px solid #E0F7FA;
+			margin: 4px;
+		}
+		h2 {
+			color: #009688;
+			font-weight: 500;
+			font-family: Raleway, "Helvetica Neue", Helvetica, Arial, sans-serif;
+			margin: 20px 0px 25px 0px;
+		}
+		.box-value, .cost-box-value {
+			text-align: center;
+			color: #616161;
+			margin-top: 15px;
+		}
+		.box-value, #totalCost {
+			font-size: 40px;
+			margin-top: 15px;
+		}
+		.box-text {
+			font-size: 14px;
+			text-align: center;
+			padding: 8px;
+		}
+		hr {
+			margin: 8px 0;
+			padding: 0;
+			border: none;
+			height: 1px;
+			background-color: #E0F7FA;
+		}
+		h4 {
+			color: #009688;
+			margin: 8px 0px 8px 8px;
+		}
+		#more-content {
+			margin: 8px 0px 8px 8px;
+		}
+		.small-text {
+			font-size: 15px;
+		}
+
+	</style>
+	
+	<template>
+		<div class="sidebox" id="right">
+			<div class="sidebox-header">
+				<h2>Summary</h2>
+			</div>
+			<div class="sidebox-content">
+				<div class="horizontal layout">
+					<div class="inner-box layout vertical">
+						<div class="cost-box-value flex layout vertical center-justified">
+							<div><span id="totalCost">$0</span></div>
+						</div>
+						<div class="box-text">Total Cost</div>
+					</div>
+					<div class="inner-box layout vertical">
+						<div class="box-value flex layout vertical center-justified">{{results.timeline}}</div>
+						<div class="box-text">Project Days</div>
+					</div>
+				</div>
+				<div class="horizontal layout">
+					<div class="inner-box layout vertical">
+						<div class="box-value flex layout vertical center-justified">{{results.teamCount}}</div>
+						<div class="box-text">Team Size</div>
+					</div>
+					<div class="inner-box layout vertical">
+						<div class="box-value flex layout vertical center-justified">{{results.totalPersonDays}}</div>
+						<div class="box-text">Person Days</div>
+					</div>
+				</div>
+			</div>
+			<hr/>
+			<div class="verticle end-justified layout">
+				<h4><a class="clickable" on-tap="showMore">MORE</a></h4>
+				<core-collapse opened$="{{detailsOpened}}">
+					<div id="more-content">
+						<h4>Recommended Services</h4>
+						<div class="vertical layout flex">
+							<div><input type="checkbox" checked>Version Control</div>
+							<div><input type="checkbox" checked>Cloud Hosting</div>
+							<div><input type="checkbox" checked>Crash Reporting</div>
+							<div><input type="checkbox" checked>Performance Monitoring</div>
+							<div><input type="checkbox" checked>Usage Analytics</div>
+						</div>
+						<h4>Team Componsition</h4>
+						<div class="vertical layout flex">
+							<div class="small-text">
+								<template is="x-repeat" items="{{results.teamComposition}}">
+									<div>{{item}}</div>
+								</template>
+							</div>
+						</div>
+					</div>
+				</core-collapse>
+			</div>
+			<div class="horizontal layout">
+				<h4><a class="clickable" on-tap="downloadReport">DOWNLOAD REPORT</a></h4>
+			</div>
+		</div>
+	</template>
+</dom-module>
+
+
+<script>
+	Polymer({
+		is: "ace-calculator-right",
+
+		properties: {
+			results: {
+				type: Object,
+			},
+		},
+		observers: {
+			"results.totalCost": "updateCost",
+		},
+
+		detailsOpened: false,
+		showMore: function() {
+			this.detailsOpened = !this.detailsOpened;
+		},
+		downloadReport: function() {
+			alert("Coming soon!");
+		},
+
+		updateCost: function() {
+			var cost = numeral(this.results.totalCost).format("0.0a");
+			this.$.totalCost.textContent = "$"+cost;
+			this.adjustCostFontSize();
+		},
+
+		adjustCostFontSize: function() {
+			var fontSize = 40;
+			// console.log(this.$.totalCost.offsetWidth);
+			while(this.$.totalCost.offsetWidth > 104) {
+				fontSize -= 2;
+				this.$.totalCost.style.fontSize = fontSize + "px";
+			}
+		},
+	});
+</script>

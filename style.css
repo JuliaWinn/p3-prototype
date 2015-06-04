@@ -1,0 +1,29 @@
+
+.clickable {
+	cursor: pointer;
+}
+
+.hidden {
+	display: none;
+}
+
+h2 {
+	font-size: 25px;
+	color: #009688;
+	font-weight: 400;
+	font-family: Raleway, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.sidebox {
+	display: block;
+	width: 244px;
+	background-color: white;
+	border: 2px solid #E0F7FA;
+	margin: 20px 16px;
+}
+.sidebox-content {
+	padding: 4px;
+}
+.sidebox-header {
+	margin: 10px 0px 0px 10px;
+}

@@ -1,0 +1,202 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<script>
+	(function() {
+		var defaultQuestions = [
+	        {
+				text: "What platforms will your product run on?",
+				description: "Select all that apply",
+				options: [
+					{label: 'Android', name: 'android', img: 'platform/1.png', android: 4, ios: 0, windows: 0, blackberry: 0, web: 0},
+					{label: 'iOS', name: 'ios', img: 'platform/0.png', ios: 4, android: 0, windows: 0, blackberry: 0, web: 0},
+					{label: 'Windows', name: 'windows', img: 'platform/2.png', windows: 4, android: 0, blackberry: 0, web: 0},
+					{label: 'Blackberry', name: 'blackberry', img: 'platform/3.png', blackberry: 4, android: 0, ios: 0, windows: 0, web: 0},
+					{label: 'Web', name: 'web', img: 'platform/4.png', web : 4, android: 0, ios: 0, windows: 0, blackberry: 0}
+				],
+	        },
+			{
+				text: "How many pages will your product have?",
+				description: "",
+				options: [
+					{label: '1-5', isExclusive: true, img: 'size/0.png', graphic_designer: 3, android: 3, ios: 3, windows: 3, blackberry: 3, web: 3},
+					{label: '6-12', isExclusive: true, img: 'size/1.png', graphic_designer: 8, android: 8, ios: 8, windows: 8, blackberry: 8, web: 8},
+					{label: '13+', isExclusive: true, img: 'size/2.png', graphic_designer: 13, android: 13, ios: 13, windows: 13, blackberry: 13, web: 13}
+					],
+			},
+	        {
+				text: "Will your product have a login?",
+				description: "",
+				options: [
+					{label: 'No', isExclusive: true, img: 'none.png'},
+					{label: 'Yes', img: 'user-management/2.png', backend: 5, android: 2, ios: 2, windows: 2, blackberry: 2, web: 2, variableName: "hasLogin"},
+				],
+	        },
+	        {
+				text: "Who will your users be?",
+				description: "Select all that apply",
+				visibilityFunc: function(vars) {
+	          		return vars["hasLogin"];
+	          	},
+					options: [
+					{label: 'Internal', img: 'agency.png', android: 5, ios: 5, windows: 5, blackberry: 5, web: 5},
+					{label: 'Interagency', img: 'agencies.png', android: 10, ios: 10, windows: 10, blackberry: 10, web: 10},
+					{label: 'External', img: 'outside_gov.png', android: 20, ios: 20, windows: 20, blackberry: 20, web: 20}
+				],
+	        },
+	        {
+				text: "What levels of user authentication will you require?",
+				description: "Select all that apply - think about every type of user",
+				visibilityFunc: function(vars) {
+	          		return vars["hasLogin"];
+	          	},
+				options: [
+					{label: 'Level 1',  img: 'user-management/2.png', backend: 6},
+					{label: 'Level 2',  img: 'none.png', backend: 15},
+					{label: 'Level 3',  img: 'none.png', backend: 25},
+					{label: 'Level 4',  img: 'none.png', backend: 50},
+					{label: "I'm not sure...", isExclusive: true,  img: 'question.png'}
+				],
+	        },
+	        {
+				text: "How many people do you expect to use your product?",
+				description: "This will help us estimate costs for analytics & authentication services.",
+				options: [
+					{label: '1,000s', isExclusive: true, img: 'none.png'},
+					{label: '10,000s', isExclusive: true, img: 'none.png', backend: 3},
+					{label: '100,000s', isExclusive: true, img: 'none.png', backend: 6},
+					{label: 'Millions', isExclusive: true, img: 'none.png', backend: 20},
+					{label: "I'm not sure...", isExclusive: true,  img: 'question.png'}
+				],
+	        },
+	        // {
+	        //   text: "Do you the number of visitors of your site to vary widely?",
+	        //   description: "Ex: healthcare.gov seasonal enrollment results in variation",
+	        //   visibilityFunc: function(vars) {
+	        //   	return vars["hasLogin"];
+	        //   },
+	        //   options: [
+	        //     {label: 'No', isExclusive: true,  img: 'steady.png'},
+	        //     {label: 'Yes',  img: 'analytics/1.png', backend: 15},
+	        //   ],
+	        // },
+	        {
+				text: "Will your product need to access data from another system?",
+				description: "Select all that apply",
+				options: [
+					{label: 'No', isExclusive: true, img: 'none.png'},
+					{label: 'Within Agency', img: 'agency.png', backend: 15},
+					{label: 'Another Agency', img: 'agencies.png', backend: 25},
+					{label: 'Outside Government', img: 'outside_gov.png', backend: 10}
+				],
+	        },
+	        {
+				text: "Do you plan to engage your users with any of the following:",
+				description: "",
+				visibilityFunc: function(vars) {
+	          		return vars["hasLogin"];
+	          	},
+				options: [
+					{label: 'No', isExclusive: true, img: 'none.png', backend: 50},
+					{label: 'Emails', img: 'engagement/1.png', backend: 5},
+					{label: 'Push Notifications', img: 'engagement/1.png', backend: 15},
+					{label: 'SMS', img: 'engagement/1.png', backend: 50}
+				],
+	        },
+			{
+				text: "FISMA Level?",
+				description: "",
+				options: [
+					{label: 'Low', isExclusive: true, img: 'security/1.png', backend: 5},
+					{label: 'Moderate', isExclusive: true, img: 'security/2.png', backend: 15},
+					{label: 'High', isExclusive: true, img: 'security/3.png', backend: 50}
+				],
+			},
+	        {
+				text: "Will you require a web dashboard to manage your application?",
+				description: "",
+				options: [
+					{label: 'No', isExclusive: true, img: 'none.png'},
+					{label: 'Yes', img: 'web-portal/1.png', backend: 5, web: 20},
+				],
+	        },
+	        {
+				text: "Will you need a new .gov domain?",
+				description: "",
+				options: [
+					{label: 'No', isExclusive: true, img: 'none.png'},
+					{label: 'Yes', isExclusive: true,  img: 'dotgov.png'}
+				],
+	        },
+		];
+
+		Polymer({
+			is: "ace-model",
+			properties: {
+				questions: {
+					type: Array,
+					value: defaultQuestions,
+					notify: true,
+				}
+			},
+
+			observers: {
+				"questions.*": "questionsChanged",
+			},
+
+			ready: function() {
+				this.questions.forEach(function(question) {
+					question.visible = true;
+					question.options.forEach(function(option) {
+						option.selected = false;
+					});
+				});
+
+				this.buildVariableHandlers();
+				this.questionsChanged();
+			},
+
+			buildVariableHandlers: function() {
+				var variableOptions = {};
+				var visibilityFunctions = [];
+				this.questions.forEach(function(question, questionIndex) {
+					// If the question has any variable functions, add them
+					if(question.visibilityFunc) {
+						visibilityFunctions.push(function(vars) {
+							var visible = question.visibilityFunc(vars);
+							this.setPathValue("questions."+questionIndex+".visible", visible);
+							console.log(question.text, visible);
+						}.bind(this));
+					}
+
+					question.options.forEach(function(option) {
+						// If the option is associated with a variable, add it to the dict
+						if(option.variableName) {
+							console.log(option.variableName);
+							variableOptions[option.variableName] = option;
+						}
+					}.bind(this));
+				}.bind(this));
+
+				this.variableOptions_ = variableOptions;
+				console.log(1, visibilityFunctions);
+				this.visibilityFunctions_ = visibilityFunctions;
+			},
+
+			questionsChanged: function() {
+				// Called whenever a question changes, lets you update as necessary
+				console.log("questionsChanged");
+				if(this.visibilityFunctions_ && this.variableOptions_) {
+					var vars = {};
+					for(var varName in this.variableOptions_) {
+						vars[varName] = this.variableOptions_[varName].selected;
+					}
+					
+					this.visibilityFunctions_.forEach(function(fn) {
+						fn(vars);
+					});
+				}
+			},
+		});
+	})();
+		
+</script>

@@ -1,0 +1,162 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<script>
+	Polymer({
+		is: "ace-calculator",
+
+		properties: {
+			results: {
+				type: Object,
+				value: function() {
+					return {
+						totalPersonDays: 0,
+						totalPersonCost: 0,
+						totalServicesCost: 0,
+						totalOngoingCost: 0,
+						timeline: 0,
+						totalCost: 0,
+						teamComponsition: [],
+						teamCount: 0,
+						ongoingCosts: {},
+					};
+				},
+				notify: true,
+			},
+		},
+
+		refresh: function(questions) {
+			// components on/off
+			// users - user auth, user level analytics
+			// platforms - platform type
+			// product management tools
+			// @TODO auth costs = $3 * the number of users who require level 2 auth or higher
+
+			var components = {
+				platforms: [],
+				login: false,
+				auth: false,
+			}
+
+			var serviceCosts = {
+				hosting: 1000,
+				auth: 0,
+				analytics: 500,
+				versionControl: 500,
+			}
+
+			// var platforms = [];
+			var platforms = ['backend', 'project_manager', 'graphic_designer'];
+			var personnel = {
+				web: 0,
+				android: 0,
+				ios: 0,
+				windows: 0,
+				blackberry: 0,
+				project_manager: 0,
+				graphic_designer: 0,
+				backend: 0,
+			}
+
+			// labor costs
+
+			var totalPersonDays = 0;
+			var developerTypes = [];
+
+			var rates = {
+				"android": 1000,
+				"ios": 1000,
+				"windows": 1000,
+				"blackberry": 1000,
+				"web": 1000,
+				"project_manager": 1000,
+				"backend": 1000,
+				"graphic_designer": 700
+			}
+
+			// get platforms
+			questions[0].options.forEach(function(option) {
+				if(option.selected) {
+					platforms.push(option.name);
+					personnel[option.name] += 4;
+
+				}
+			});
+
+			questions.forEach(function(question) {
+				if (question.text != "What platforms are you building for?") {
+					question.options.forEach(function(option) {
+						if(option.selected) {
+							platforms.forEach(function(platform) {
+								if (option[platform]) {
+									personnel[platform] += option[platform];
+								}
+							});
+
+						}
+					});
+				}
+			});
+
+			// if more than 5 days engineering time add project maager
+			// project manager time bills at 15-20% of engineers
+			// graphic designer in proportion to number of pages/size of app
+
+
+			// get total cost, people costs, services costs (ongoing)
+			var maxdays = 0;
+			var totalPersonCost = 0;
+			var yearlyServicesCost = 0;
+			var engList = ['android', 'ios', 'blackberry', 'web', 'windows']
+
+			for (var key in personnel) {
+				totalPersonDays += personnel[key];
+				totalPersonCost += personnel[key]*rates[key];
+				if (engList.indexOf(key) > -1) {
+					if (maxdays < personnel[key]) {
+						maxdays = personnel[key];
+					}
+				}				
+			}
+			personnel['project_manager'] = Math.ceil(0.15*totalPersonDays + personnel['backend'] + personnel['graphic_designer']);
+			var extras = personnel['backend'] + personnel['graphic_designer'] + personnel['project_manager'];
+
+			this.setPathValue("results.timeline", Math.ceil(maxdays*1.5 + extras));
+			this.setPathValue("results.totalPersonDays", Math.ceil(totalPersonDays + extras));
+
+			for (var key in serviceCosts) {
+				yearlyServicesCost += serviceCosts[key];
+			}
+			
+			if (totalPersonCost <= 10000) {
+				this.setPathValue("results.totalCost", totalPersonCost);
+			}
+			else {
+				this.setPathValue("results.totalCost", totalPersonCost + yearlyServicesCost);
+			}
+			
+			// get total personnel, translate to visual titles
+			format_team = {
+				"android": "Android Developer",
+				"ios": "iOS Developer",
+				"windows": "Windows Developer",
+				"blackberry": "Blackberry Developer",
+				"web": "Web Developer",
+				"project_manager": "Project Manager",
+				"backend": "Backend Developer",
+				"graphic_designer": "Graphic Designer"
+			}
+			var teamComposition = [];
+			var personnelCount = 0;
+			for (var person in personnel) {
+				if (personnel[person] > 0) {
+					personnelCount += 1;
+					var formatted_person = format_team[person] + ': ' + personnel[person].toString() + ' days';
+					teamComposition.push(formatted_person);
+				}
+			}
+			this.setPathValue("results.teamComposition", teamComposition);
+			this.setPathValue("results.teamCount", personnelCount);
+			
+		},
+	});
+</script>

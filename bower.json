@@ -1,0 +1,13 @@
+{
+  "name": "ace",
+  "version": "0.0.0",
+  "authors": [
+    "Julia Winn <julia4thewinn@gmail.com>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "polymer": "Polymer/polymer#^0.8.0-rc.2",
+    "layout": "Polymer/layout"
+  }
+}

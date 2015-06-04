@@ -1,0 +1,53 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module id="ace-option">
+	<style>
+		:host(.selected) .option {
+			border: 2px solid #FF5722;
+		}
+		.text {
+			text-align: center;
+			margin-top: 5px;
+			font-size: 12px;
+			width: 80px;
+		}
+		.option{
+			background-color: #E0F2F1;
+			width: 75px;
+			height: 75px;
+			margin: 0px 5px;
+			border: 2px solid #E0F7FA;
+		}
+	</style>
+	<template>
+		<div class="option">
+			<img src="{{imageUrl}}" width="75px">
+		</div>
+		<div class="text">{{option.label}}</div>
+		<br />
+	</template>
+</dom-module>
+
+<script>
+	Polymer({
+		is: "ace-option",
+
+		properties: {
+			option: Object,
+		},
+		observers: {
+			"option.selected": "updateSelection",
+			"option.img": "updateImage",
+		},
+
+		imageUrl: "",
+		 
+		updateSelection: function() {
+			// console.log("Update selection!");
+			this.classList.toggle("selected", this.option.selected);				
+		},
+		updateImage: function() {
+			this.imageUrl = "../images/"+this.option.img;
+		},
+	});
+</script>
